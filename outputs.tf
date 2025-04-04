@@ -32,3 +32,16 @@ output "nat_gateway_id" {
   description = "The ID of the NAT Gateway"
   value       = module.vpc.nat_gateway_id
 }
+
+output "bastion_ip" {
+  description = "The public IP of the Bastion Host instance"
+  value       = module.ec2.bastion_instance_public_ip
+}
+
+output "nginx_servers" {
+  description = "The IDs of the Private Server instances"
+  value       = module.ec2.private_server_instance_ip
+}
+
+
+

@@ -32,3 +32,8 @@ override.tf.json
 # OS-specific files
 .DS_Store
 Thumbs.db
+
+# .gitignore
+*.pem
+*.pem.*
+*.key

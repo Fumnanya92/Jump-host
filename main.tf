@@ -23,10 +23,6 @@ module "security_groups" {
   bastion_sg_id = module.security_groups.bastion_sg_id # Pass the bastion_sg_id
 }
 
-output "vpc_id" {
-  value = module.vpc.vpc_id
-}
-
 # Call the EC2 module
 module "ec2" {
   source                 = "./modules/ec2"

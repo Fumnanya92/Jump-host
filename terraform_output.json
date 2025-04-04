@@ -1,0 +1,58 @@
+{
+  "bastion_ip": {
+    "sensitive": false,
+    "type": "string",
+    "value": "34.221.60.130"
+  },
+  "internet_gateway_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "igw-0671960fe66aceb63"
+  },
+  "nat_gateway_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "nat-0a500acd6a5b9bc85"
+  },
+  "nginx_servers": {
+    "sensitive": false,
+    "type": [
+      "tuple",
+      [
+        "string",
+        "string",
+        "string"
+      ]
+    ],
+    "value": [
+      "10.161.0.159",
+      "10.161.0.148",
+      "10.161.0.156"
+    ]
+  },
+  "private_subnet_1_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "subnet-034f3075ae302f10d"
+  },
+  "private_subnet_2_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "subnet-0bd428fbfa796cd26"
+  },
+  "public_subnet_1_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "subnet-0cc709336d8520597"
+  },
+  "public_subnet_2_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "subnet-0b1cd5c144efaed77"
+  },
+  "vpc_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "vpc-0601d85fd0790dfd1"
+  }
+}
