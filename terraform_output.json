@@ -2,17 +2,17 @@
   "bastion_ip": {
     "sensitive": false,
     "type": "string",
-    "value": "34.221.60.130"
+    "value": "34.214.239.9"
   },
   "internet_gateway_id": {
     "sensitive": false,
     "type": "string",
-    "value": "igw-0671960fe66aceb63"
+    "value": "igw-013886441e8dc96df"
   },
   "nat_gateway_id": {
     "sensitive": false,
     "type": "string",
-    "value": "nat-0a500acd6a5b9bc85"
+    "value": "nat-04a125df146e2ef73"
   },
   "nginx_servers": {
     "sensitive": false,
@@ -25,34 +25,34 @@
       ]
     ],
     "value": [
-      "10.161.0.159",
-      "10.161.0.148",
-      "10.161.0.156"
+      "10.161.0.153",
+      "10.161.0.155",
+      "10.161.0.149"
     ]
   },
   "private_subnet_1_id": {
     "sensitive": false,
     "type": "string",
-    "value": "subnet-034f3075ae302f10d"
+    "value": "subnet-0964405235314cdf8"
   },
   "private_subnet_2_id": {
     "sensitive": false,
     "type": "string",
-    "value": "subnet-0bd428fbfa796cd26"
+    "value": "subnet-0a4c13cc4376a22cd"
   },
   "public_subnet_1_id": {
     "sensitive": false,
     "type": "string",
-    "value": "subnet-0cc709336d8520597"
+    "value": "subnet-0fa548b6306ebdd9b"
   },
   "public_subnet_2_id": {
     "sensitive": false,
     "type": "string",
-    "value": "subnet-0b1cd5c144efaed77"
+    "value": "subnet-006e40962445ad680"
   },
   "vpc_id": {
     "sensitive": false,
     "type": "string",
-    "value": "vpc-0601d85fd0790dfd1"
+    "value": "vpc-081bd874f6cc6876c"
   }
 }
