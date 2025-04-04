@@ -1,0 +1,18 @@
+---
+- name: Create custom index.html for Nginx
+  template:
+    src: index.html.j2
+    dest: /tmp/index.html
+
+- name: Run Nginx container with custom index.html
+  docker_container:
+    name: nginx
+    image: nginx
+    state: started
+    restart_policy: always
+    exposed_ports:
+      - "80"
+    published_ports:
+      - "80:80"
+    volumes:
+      - "/tmp/index.html:/usr/share/nginx/html/index.html:ro"

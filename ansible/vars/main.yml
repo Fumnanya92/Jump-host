@@ -1,0 +1,2 @@
+nginx_message: "{{ inventory_hostname }}"
+private_key_path: "~/.ssh/my_terraform_key.pem"
