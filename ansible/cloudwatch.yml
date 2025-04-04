@@ -1,0 +1,36 @@
+---
+- name: Configure CloudWatch Logs on EC2
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install CloudWatch Agent
+      yum:
+        name: amazon-cloudwatch-agent
+        state: present
+
+    - name: Create CloudWatch Agent Config File
+      copy:
+        dest: /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+        content: |
+          {
+            "logs": {
+              "logs_collected": {
+                "files": {
+                  "collect_list": [
+                    {
+                      "file_path": "/var/lib/docker/containers/*/*.log",
+                      "log_group_name": "/nginx/logs",
+                      "log_stream_name": "{instance_id}"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+
+    - name: Start and Enable CloudWatch Agent
+      systemd:
+        name: amazon-cloudwatch-agent
+        state: started
+        enabled: yes
