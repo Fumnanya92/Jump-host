@@ -22,3 +22,10 @@ output "private_server_instance_ip" {
   description = "The IDs of the Private Server instances"
   value       = aws_instance.private_servers[*].private_ip
 }
+
+locals {
+  inventory_content = templatefile("${path.module}/ansible/inventory.tpl", {
+    bastion_ip  = aws_instance.bastion.public_ip
+    private_ips = join("\n", [for i in aws_instance.private_servers : i.private_ip])
+  })
+}

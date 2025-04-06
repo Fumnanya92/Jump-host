@@ -1,0 +1,40 @@
+---
+- name: Install Docker
+  become: yes
+  package:
+    name: docker
+    state: present
+
+- name: Create the docker group if it doesn't exist
+  become: yes
+  group:
+    name: docker
+    state: present
+
+- name: Add ec2-user to the docker group
+  become: yes
+  user:
+    name: ec2-user
+    groups: docker
+    append: yes
+
+- name: Start and enable Docker service
+  become: yes
+  systemd:
+    name: docker
+    enabled: yes
+    state: started
+
+- name: Wait for Docker socket to appear
+  become: yes
+  wait_for:
+    path: /var/run/docker.sock
+    timeout: 60
+
+- name: Fix permissions on Docker socket
+  become: yes
+  file:
+    path: /var/run/docker.sock
+    owner: root
+    group: docker
+    mode: '0660'

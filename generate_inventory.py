@@ -1,11 +1,12 @@
 import json
+import subprocess
 
-# Load Terraform output
-def load_terraform_output(file_path):
-    with open(file_path) as f:
-        return json.load(f)
+# Load Terraform output using 'terraform output' command
+def load_terraform_output(output_name):
+    result = subprocess.run(['terraform', 'output', '-json', output_name], capture_output=True, text=True)
+    return json.loads(result.stdout)[output_name]['value']
 
-# Generate inventory file for bastion and nginx servers
+# Generate inventory file for Bastion and Nginx servers
 def generate_inventory(bastion_ip, nginx_ips, private_key_path):
     inventory_content = []
     
@@ -27,16 +28,13 @@ def generate_inventory(bastion_ip, nginx_ips, private_key_path):
 
 # Main function to generate the inventory file
 def main():
-    terraform_output_file = 'terraform_output.json'
+    # Define private key path and inventory file path
     private_key_path = '~/.ssh/my_terraform_key.pem'
     inventory_file_path = './ansible/inventory.ini'
     
-    # Load output from terraform
-    data = load_terraform_output(terraform_output_file)
-    
-    # Extract Bastion and Nginx IPs
-    bastion_ip = data["bastion_ip"]["value"]
-    nginx_ips = data["nginx_servers"]["value"]
+    # Load Bastion and Nginx IPs using Terraform outputs
+    bastion_ip = load_terraform_output("bastion_ip")
+    nginx_ips = load_terraform_output("nginx_servers")
     
     # Generate inventory content
     inventory_content = generate_inventory(bastion_ip, nginx_ips, private_key_path)

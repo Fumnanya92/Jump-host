@@ -16,6 +16,11 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids = var.vpc_security_group_ids 
   key_name               = aws_key_pair.terraform_key.key_name
 
+  # Pass base64-encoded private key to the instance for user data
+   user_data = templatefile("${path.module}/userdata.sh", {
+    private_key = base64encode(tls_private_key.terraform.private_key_pem)
+  })
+
   tags = {
     Name = "Bastion Host"
   }
@@ -29,11 +34,10 @@ resource "aws_instance" "private_servers" {
   vpc_security_group_ids = var.vpc_security_group_ids  # This should include the private_sg_id
   key_name               = aws_key_pair.terraform_key.key_name
 
- # Attach IAM Instance Profile for CloudWatch Logs
+  # Attach IAM Instance Profile for CloudWatch Logs
   iam_instance_profile = var.iam_instance_profile
 
   tags = {
     Name = "Private-Server-${count.index + 1}"
   }
 }
-
