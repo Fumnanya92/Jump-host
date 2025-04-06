@@ -1,36 +1,28 @@
 #!/bin/bash
 set -e
 
-# Update package lists and upgrade packages
-echo "Updating package lists..."
-sudo yum update -y
-sudo yum install python3 -y
+# Update and install dependencies
+echo "Updating and installing essentials..."
+apt-get update -y
+apt-get upgrade -y
+apt-get install -y python3 python3-pip git unzip curl software-properties-common
 
-# Install Git and unzip
-echo "Installing Git and unzip..."
-sudo yum install -y git unzip
+# Install Ansible (latest)
+pip3 install --upgrade pip
+pip3 install ansible
 
-# Create the ansible directory for later usage
-echo "Creating Ansible directory..."
-mkdir -p /home/ec2-user/ansible
+# Setup directory for Ansible
+mkdir -p /home/ubuntu/ansible
 
-# # Install Ansible
-# echo "Installing Ansible..."
-# sudo yum install ansible -y
-
-# Ensure SSH key is available for accessing the private EC2 instances
-mkdir -p ~/.ssh
-if [ -z "${private_key}" ]; then
-    echo "SSH key not present, skipping key setup."
+# Setup private SSH key
+mkdir -p /home/ubuntu/.ssh
+if [ -n "${private_key}" ]; then
+    echo "${private_key}" | base64 --decode > /home/ubuntu/.ssh/id_rsa
+    chmod 400 /home/ubuntu/.ssh/id_rsa
+    chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
 else
-    echo "${private_key}" | base64 --decode > ~/.ssh/id_rsa
-    chmod 400 ~/.ssh/id_rsa
+    echo "Private key not provided."
 fi
 
-# Check installed versions
-echo "Installation complete: Terraform, Git, and Ansible are now installed."
 echo "Ansible version:"
 ansible --version
-echo "Git version:"
-git --version
-echo "All installations are complete."

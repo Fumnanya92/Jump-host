@@ -1,23 +1,27 @@
-data "aws_ami" "amazon_linux" {
+data "aws_ami" "ubuntu_latest" {
   most_recent = true
+  owners      = ["099720109477"] # Canonical (official Ubuntu owner ID)
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
 
-  owners = ["137112412989"] # Amazon's official account ID
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
 }
 
 resource "aws_instance" "bastion" {
-  ami                    = data.aws_ami.amazon_linux.id
+  ami                    = data.aws_ami.ubuntu_latest.id
   instance_type          = "t3.micro"
   subnet_id              = var.public_subnet_id
-  vpc_security_group_ids = var.vpc_security_group_ids 
+  vpc_security_group_ids = var.vpc_security_group_ids
   key_name               = aws_key_pair.terraform_key.key_name
 
   # Pass base64-encoded private key to the instance for user data
-   user_data = templatefile("${path.module}/userdata.sh", {
+  user_data = templatefile("${path.module}/userdata.sh", {
     private_key = base64encode(tls_private_key.terraform.private_key_pem)
   })
 
@@ -28,10 +32,10 @@ resource "aws_instance" "bastion" {
 
 resource "aws_instance" "private_servers" {
   count                  = 3
-  ami                    = data.aws_ami.amazon_linux.id
+  ami                    = data.aws_ami.ubuntu_latest.id
   instance_type          = "t3.micro"
   subnet_id              = var.private_subnet_id
-  vpc_security_group_ids = var.vpc_security_group_ids  # This should include the private_sg_id
+  vpc_security_group_ids = var.vpc_security_group_ids # This should include the private_sg_id
   key_name               = aws_key_pair.terraform_key.key_name
 
   # Attach IAM Instance Profile for CloudWatch Logs

@@ -9,7 +9,7 @@ resource "aws_key_pair" "terraform_key" {
 }
 
 resource "local_file" "tfkey" {
-  content   = tls_private_key.terraform.private_key_pem
+  content  = tls_private_key.terraform.private_key_pem
   filename = var.private_key_path
   #sensitive = true  # Mark the file as sensitive
 }
