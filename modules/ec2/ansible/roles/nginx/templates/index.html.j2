@@ -1,4 +1,65 @@
+<!DOCTYPE html>
 <html>
-  <head><title>Welcome</title></head>
-  <body><h1>Hello from {{ ansible_hostname }}</h1></body>
+<head>
+    <title>DevOps Land</title>
+    <style>
+        body {
+            font-family: "Courier New", monospace;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            text-align: center;
+            padding-top: 50px;
+        }
+        h1 {
+            color: #58a6ff;
+        }
+        .ascii {
+            font-size: 14px;
+            margin-top: 30px;
+            color: #8b949e;
+        }
+        .btn {
+            display: inline-block;
+            margin: 20px;
+            padding: 15px 30px;
+            font-size: 16px;
+            color: white;
+            background-color: #238636;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background-color: #2ea043;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello from {{ inventory_hostname }} 👋</h1>
+    <p>You're now inside a Docker container... inside a VM... inside AWS... running on Terraform... configured with Ansible.</p>
+    <p>It's like DevOps Inception around here.</p>
+
+    <div style="margin-top: 40px;">
+        <h2>Visit Other Servers</h2>
+        {% for server in groups['all'] %}
+            <a href="http://{{ hostvars[server]['ansible_host'] }}" class="btn" target="_blank">
+                {{ server }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <div class="ascii">
+        <pre>
+   ,--.
+   |oo  |   This is fine.
+   |:_/ |   Everything is in a container.
+  //   \ \
+ (|     | )
+/'\_   _/`\
+\___)=(___/
+        </pre>
+    </div>
+</body>
 </html>
