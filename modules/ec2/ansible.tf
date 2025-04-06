@@ -39,8 +39,11 @@ resource "null_resource" "run_ansible" {
     inline = [
       # SSH Config Setup
       "mkdir -p ~/.ssh",
-      "echo -e 'Host *\\n  StrictHostKeyChecking no\\n  UserKnownHostsFile /dev/null' > ~/.ssh/config",
+      "echo 'Host *' > ~/.ssh/config",
+      "echo '  StrictHostKeyChecking no' >> ~/.ssh/config",
+      "echo '  UserKnownHostsFile /dev/null' >> ~/.ssh/config",
       "chmod 600 ~/.ssh/config",
+      "chown ubuntu:ubuntu ~/.ssh/config",
 
       # Move private key
       "mv /tmp/my_terraform_key.pem ~/.ssh/my_terraform_key.pem",
