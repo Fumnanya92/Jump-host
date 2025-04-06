@@ -44,18 +44,12 @@ resource "null_resource" "run_ansible" {
       "echo '    UserKnownHostsFile /dev/null' >> ~/.ssh/config",
       "chmod 600 ~/.ssh/config",
       "chown ubuntu:ubuntu ~/.ssh/config",
-
-      # Move private key
       "mv -f /tmp/my_terraform_key.pem ~/.ssh/my_terraform_key.pem",
       "chmod 400 ~/.ssh/my_terraform_key.pem",
-
-      # Install Ansible if missing
       "echo 'Installing Ansible if not already present...'",
       "sudo apt update",
       "sudo apt-add-repository --yes --update ppa:ansible/ansible",
       "sudo apt install -y ansible",
-
-      # Run playbook
       "cd /tmp/ansible",
       "ansible-playbook -i inventory.ini playbook.yml -vvv"
     ]
