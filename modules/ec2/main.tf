@@ -15,7 +15,7 @@ data "aws_ami" "ubuntu_latest" {
 
 resource "aws_instance" "bastion" {
   ami                    = data.aws_ami.ubuntu_latest.id
-  instance_type          = "t3.micro"
+  instance_type          = var.instance_type
   subnet_id              = var.public_subnet_id
   vpc_security_group_ids = var.vpc_security_group_ids
   key_name               = aws_key_pair.terraform_key.key_name
@@ -33,7 +33,7 @@ resource "aws_instance" "bastion" {
 resource "aws_instance" "private_servers" {
   count                  = 3
   ami                    = data.aws_ami.ubuntu_latest.id
-  instance_type          = "t3.micro"
+  instance_type          = var.instance_type
   subnet_id              = var.private_subnet_id
   vpc_security_group_ids = var.vpc_security_group_ids # This should include the private_sg_id
   key_name               = aws_key_pair.terraform_key.key_name

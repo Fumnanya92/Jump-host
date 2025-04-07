@@ -51,7 +51,7 @@ resource "null_resource" "run_ansible" {
       "sudo DEBIAN_FRONTEND=noninteractive apt-add-repository --yes --update ppa:ansible/ansible",
       "sudo DEBIAN_FRONTEND=noninteractive apt install -y ansible",
       "cd /tmp/ansible",
-      "ansible-playbook -i inventory.ini playbook.yml -vvv"
+      "ansible-playbook -i inventory.ini playbook.yml"
     ]
   }
 }

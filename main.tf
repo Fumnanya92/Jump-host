@@ -33,6 +33,7 @@ module "ec2" {
   private_key_path       = var.private_key_path
   iam_instance_profile   = module.iam.iam_instance_profile_name
   vpc_security_group_ids = [module.security_groups.bastion_sg_id, module.security_groups.private_sg_id] # Include private_sg_id
+  instance_type = var.instance_type
 }
 
 module "s3" {

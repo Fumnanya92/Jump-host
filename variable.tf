@@ -74,4 +74,7 @@ variable "private_key_path" {
   default     = "~/.ssh/my_terraform_key.pem" # Default path if not specified
 }
 
-
+variable "instance_type"{
+  description = "type of instance"
+  type = string
+}
