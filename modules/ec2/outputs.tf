@@ -29,3 +29,4 @@ locals {
     private_ips = join("\n", [for i in aws_instance.private_servers : i.private_ip])
   })
 }
+

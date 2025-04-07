@@ -47,9 +47,9 @@ resource "null_resource" "run_ansible" {
       "mv -f /tmp/my_terraform_key.pem ~/.ssh/my_terraform_key.pem",
       "chmod 400 ~/.ssh/my_terraform_key.pem",
       "echo 'Installing Ansible if not already present...'",
-      "sudo apt update",
-      "sudo apt-add-repository --yes --update ppa:ansible/ansible",
-      "sudo apt install -y ansible",
+      "sudo DEBIAN_FRONTEND=noninteractive apt update -y",
+      "sudo DEBIAN_FRONTEND=noninteractive apt-add-repository --yes --update ppa:ansible/ansible",
+      "sudo DEBIAN_FRONTEND=noninteractive apt install -y ansible",
       "cd /tmp/ansible",
       "ansible-playbook -i inventory.ini playbook.yml -vvv"
     ]
