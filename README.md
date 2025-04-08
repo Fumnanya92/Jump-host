@@ -1,216 +1,190 @@
-### **README.md for Terraform and Ansible Project**
+Your updated project description sounds solid! Here's a refined version with the new details and personal experiences integrated:
 
 ---
 
-# **Infrastructure as Code (IaC) with Terraform and Ansible**
+### Jump-host Project
 
-This project automates the provisioning of AWS infrastructure using **Terraform** and configuration management using **Ansible**. The infrastructure includes a VPC with multiple subnets, EC2 instances, a Bastion Host, an Application Load Balancer (ALB), IAM roles, and a Dockerized Nginx setup. Additionally, it ensures that Docker logs are sent to **CloudWatch** for monitoring.
-
----
-
-## **Table of Contents**
-
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Setup Instructions](#setup-instructions)
-  - [Terraform](#terraform-setup)
-  - [Ansible](#ansible-setup)
-- [Project Structure](#project-structure)
-- [Detailed Explanation](#detailed-explanation)
-  - [Terraform Configuration](#terraform-configuration)
-  - [Ansible Configuration](#ansible-configuration)
-- [Source of Information](#source-of-information)
+This project uses **Terraform** to provision AWS infrastructure and **Ansible** to configure services on EC2 instances. The infrastructure includes a **Virtual Private Cloud (VPC)**, private and public subnets across 2 Availability Zones (AZs), EC2 instances, a **Bastion Host (jump host)**, an **Application Load Balancer (ALB)**, and Dockerized **Nginx** services running on each EC2 instance. Additionally, Docker logs are delivered to AWS **CloudWatch** for centralized logging and monitoring.
 
 ---
 
-## **Overview**
+### Table of Contents
 
-This project provisions a **VPC** with private and public subnets, **EC2 instances**, and an **ALB**. The **EC2 instances** will run **Nginx in Docker containers**, each with a customized `index.html`. Logs from these containers will be forwarded to **CloudWatch** for monitoring purposes. An **Ansible playbook** will be used to configure the EC2 instances, install Docker, deploy the Nginx containers, and configure CloudWatch.
-
----
-
-## **Prerequisites**
-
-Before you start, make sure you have the following tools installed:
-
-- **Terraform** (v1.0 or above) for provisioning AWS infrastructure
-- **Ansible** (v2.9 or above) for configuring host services
-- **AWS CLI** (optional, for accessing AWS resources)
-- **Docker** (optional, for testing locally)
-- **Git** for version control
-- **Python 3** (required by Ansible)
-
-You should also have an **AWS account** with appropriate access (IAM role with permissions to create EC2 instances, VPCs, IAM roles, etc.).
+1. **Overview**
+2. **Prerequisites**
+3. **Setup Instructions**
+4. **Terraform Setup**
+5. **Ansible Setup**
+6. **Detailed Explanation**
+   - Terraform Infrastructure
+   - Ansible Configuration
+   - Jenkins Integration
+7. **Source of Information**
+8. **Suggested Improvements**
 
 ---
 
-## **Setup Instructions**
+### Overview
 
-### **Terraform Setup**
+This project automates the setup and configuration of AWS infrastructure using **Terraform** and **Ansible**. The architecture includes:
 
-1. **Clone the Repository:**
+- A **VPC** with private and public subnets across 2 Availability Zones (AZs).
+- Three **EC2 instances** for application hosting.
+- A **Jumphost** (Bastion Host) for secure access to the private instances.
+- An **Application Load Balancer (ALB)** that distributes traffic across EC2 instances.
+- **IAM** roles and policies for EC2 instances and CloudWatch access.
+- **Dockerized Nginx instances** running on each EC2 instance with different `index.html` files.
+- **CloudWatch logging** for Docker container logs.
 
-   Clone the repository to your local machine:
+---
 
+### Key Technologies
+
+- **Terraform** for Infrastructure as Code (IaC).
+- **Ansible** for service configuration.
+- **Docker** for containerizing the Nginx service.
+- **AWS** EC2, VPC, ALB, IAM, and CloudWatch.
+
+---
+
+### Prerequisites
+
+Ensure you have the following tools installed on your local machine:
+
+- **Terraform**: For provisioning AWS infrastructure.
+- **Ansible**: For configuration management and deployment.
+- **AWS CLI**: For managing AWS resources.
+- **Docker**: For containerizing applications.
+- **Jenkins** (optional): For automating the Terraform and Ansible workflow.
+
+You also need:
+
+- An **AWS account** with sufficient permissions to manage EC2 instances, VPCs, IAM roles, and CloudWatch logs.
+- AWS credentials configured locally or through environment variables.
+
+---
+
+### Setup Instructions
+
+#### Terraform Setup
+
+1. Clone the repository:
    ```bash
-   git clone <repository_url>
-   cd <repository_name>
+   git clone https://github.com/yourusername/Jump-host.git
+   cd Jump-host
    ```
 
-2. **Configure Terraform Provider:**
-
-   Make sure your AWS credentials are set up either in `~/.aws/credentials` or through environment variables:
-
-   ```bash
-   export AWS_ACCESS_KEY_ID=<your_access_key>
-   export AWS_SECRET_ACCESS_KEY=<your_secret_key>
-   export AWS_DEFAULT_REGION=us-west-2
-   ```
-
-3. **Terraform Initialization:**
-
-   Initialize Terraform in the root of the project:
-
+2. Initialize Terraform:
    ```bash
    terraform init
    ```
 
-4. **Terraform Apply:**
-
-   Apply the Terraform configuration to provision the infrastructure:
-
+3. Plan the Terraform Execution:
    ```bash
-   terraform apply
+   terraform plan -out=tfplan
    ```
 
-   You’ll be prompted to confirm before applying. Type `yes` to proceed. This will provision the VPC, EC2 instances, ALB, IAM roles, and CloudWatch configurations.
-
-### **Ansible Setup**
-
-1. **Install Ansible:**
-
-   If you haven't installed Ansible yet, you can do so with the following commands:
-
+4. Apply the Terraform Plan:
    ```bash
-   sudo apt update
-   sudo apt install ansible
+   terraform apply tfplan
    ```
+   This will create the necessary resources, such as the VPC, subnets, EC2 instances, ALB, IAM roles, and policies.
 
-   Or, for macOS:
+#### Ansible Setup
 
-   ```bash
-   brew install ansible
-   ```
+1. **Inventory Generation**: Terraform dynamically generates the Ansible inventory file (`inventory.ini`) based on the infrastructure it provisions.
 
-2. **Configure SSH Access:**
+2. **Ansible Configuration**: The Ansible configuration (`ansible.cfg`) is generated automatically by Terraform and is tailored to use the Bastion Host’s IP for SSH access.
 
-   Make sure your **private SSH key** (created by Terraform) is correctly set in your `ansible.cfg`:
+3. **Run Ansible Playbook**: Once Terraform provisions the infrastructure, the Ansible playbook is automatically executed by Terraform through the `null_resource` with a remote-exec provisioner. This will:
+   - Install Docker and Nginx on each EC2 instance.
+   - Deploy an Nginx Docker container on each instance with a unique `index.html` file.
 
-   ```ini
-   [defaults]
-   private_key_file = ~/.ssh/my_terraform_key.pem
-   ```
-
-3. **Run the Ansible Playbook:**
-
-   To deploy and configure the EC2 instances with Docker and Nginx, use the following command:
-
-   ```bash
-   ansible-playbook -i inventory.ini playbook.yml
-   ```
-
-   This will install CloudWatch Agent, Docker, and configure Nginx on all EC2 instances as defined in the `nginx` role.
-
----
-
-## **Project Structure**
-
-```plaintext
-project/
-│
-├── terraform/
-│   ├── main.tf                 # Terraform configuration file
-│   ├── modules/                # Terraform modules
-│   ├── outputs.tf              # Terraform outputs
-│   ├── variables.tf            # Terraform variables
-│   └── terraform.tfvars        # Terraform variable values (optional)
-│
-├── ansible/
-│   ├── inventory.ini           # Ansible inventory for EC2 instances
-│   ├── ansible.cfg             # Ansible configuration
-│   ├── playbook.yml            # Main Ansible playbook
-│   ├── roles/
-│   │   ├── cloudwatch/         # Role to install CloudWatch agent
-│   │   ├── docker/             # Role to install and configure Docker
-│   │   └── nginx/              # Role to install and configure Nginx
-│   └── vars/
-│       └── main.yml            # Variables file
-│
-├── terraform_output.json       # Terraform output JSON file
-└── README.md                   # Project README
+To run manually:
+```bash
+ansible-playbook -i inventory.ini playbook.yml
 ```
 
----
+#### Docker Logs to CloudWatch
 
-## **Detailed Explanation**
+1. **Docker Logging Driver**: Configure the `awslogs` driver for Docker containers in the playbook to ensure logs are pushed to CloudWatch.
 
-### **Terraform Configuration**
-
-1. **VPC Configuration**:
-   The VPC is created with a CIDR block of `10.161.0.0/24`, which is subdivided into **public** and **private subnets**. 
-   
-   The **public subnets** are used for the Bastion Host (jump server) and the ALB. The **private subnets** are used for the EC2 instances running Nginx.
-
-2. **EC2 Instances**:
-   - **Bastion Host**: This EC2 instance is used to access the private instances. It has public access and is exposed via an **Elastic IP**.
-   - **Private EC2 Instances**: These instances run Nginx inside Docker containers, and they are not directly accessible from the public internet.
-
-3. **ALB**:
-   The **Application Load Balancer (ALB)** is configured to serve HTTP traffic (port 80) to the private EC2 instances. The ALB checks the health of each instance through health checks.
-
-4. **IAM Roles**:
-   IAM roles are created to allow EC2 instances to push logs to **CloudWatch**. These roles are attached to the EC2 instances during their creation.
-
-5. **CloudWatch Agent**:
-   The **CloudWatch agent** is installed and configured to collect Docker logs from the EC2 instances and send them to CloudWatch for centralized monitoring.
-
-### **Ansible Configuration**
-
-1. **CloudWatch Agent**:
-   The **CloudWatch Agent** is installed on all EC2 instances to collect Docker logs. A JSON configuration file is created dynamically using Ansible's **Jinja2 templating**.
-
-2. **Docker Configuration**:
-   - **Docker** is installed on the EC2 instances.
-   - The `ec2-user` is added to the **docker group** to allow the user to manage Docker without requiring `sudo`.
-   - **Docker permissions** are fixed to ensure the user can interact with the Docker socket (`/var/run/docker.sock`).
-
-3. **Nginx Setup**:
-   - The **Nginx Docker container** is configured to run with a custom `index.html` that displays a message with the host’s name.
-   - Each EC2 instance running Nginx will have a unique `index.html`, displaying "Hello from [hostname]" using **Jinja2 templating**.
+2. **CloudWatch Configuration**: Ensure the EC2 instances have appropriate IAM roles to send logs to CloudWatch.
 
 ---
 
-## **Source of Information**
+### Detailed Explanation
 
-The following resources were used to develop and guide the implementation of this project:
+#### Terraform Infrastructure
 
-- **Terraform Documentation**:
-  - [AWS EC2 Instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance)
-  - [Terraform VPC Configuration](https://www.terraform.io/docs/providers/aws/r/vpc.html)
-- **CloudWatch Installation**:
-  - [Simplifying Monitoring using Ansible to Install CloudWatch Agent](https://signiance.com/simplifying-monitoring-using-ansible-to-install-cloudwatch-agent/)
-- **YouTube Videos**:
-  - [Terraform Setup Guide](https://youtu.be/VVScigeGg2k?si=cFzqDuk77PwP-C2K)
-  - [Ansible Playbook Tutorial](https://youtu.be/r-26_oUKDA4?si=JAtZmCevyJbZVM83)
-  
-These resources helped in defining best practices for Terraform infrastructure management and efficient Ansible playbook execution.
+1. **VPC**: A custom VPC is created with a CIDR block of `10.161.0.0/24`. This ensures that the network is logically isolated, providing flexibility to create subnets and configure routing and security.
+
+2. **Subnets**: Private and public subnets are created following best practices for high availability and fault tolerance. These subnets are distributed across two Availability Zones (AZs) to ensure redundancy.
+
+   - **Private Subnets**:
+     - `10.161.0.154`
+     - `10.161.0.148`
+     - `10.161.0.156`
+
+   These subnets are located in different AZs for high availability. By placing instances in private subnets, they are shielded from direct internet access, enhancing security.
+
+3. **EC2 Instances**: Three EC2 instances are provisioned in the private subnets, and one Bastion Host is created in a public subnet for secure access to the private instances.
+
+   - **Bastion Host**: This is the only instance with public access, acting as a jump server to securely SSH into the private EC2 instances.
+
+   - **Private EC2 Instances**: These are isolated in private subnets, preventing direct access from the internet and improving security.
+
+4. **Application Load Balancer (ALB)**: The ALB distributes incoming traffic across the EC2 instances on port 80. It performs health checks to ensure that traffic is only routed to healthy instances.
+
+5. **IAM Roles**: Custom IAM roles are created to allow EC2 instances to interact with CloudWatch logs securely, enabling centralized logging for troubleshooting and monitoring.
+
+#### Ansible Configuration
+
+The Ansible playbook automates the installation of Docker and Nginx on the EC2 instances. It also ensures that each instance serves a unique `index.html` page through Docker containers. The following was done to simplify the process:
+
+- **Automating Ansible Installation**: Initially, I considered running the Ansible playbook locally, but this would require each user to install Ansible. To solve this, I used Terraform to provision the Bastion Host and ensure that Ansible runs directly on it, eliminating the need for users to set up Ansible locally.
+
+- **Python and Ansible Fixes**: Since the EC2 instances initially had Python 2.7, I upgraded it to Python 3. I also configured Ansible to use Python 3 by default (`interpreter_python = /usr/bin/python3`).
 
 ---
 
-### **How to Contribute**
+### Testing Experience
 
-If you want to contribute to this project, please fork the repository, create a new branch, and submit a pull request with your changes.
+While working on the project, I encountered several issues:
+
+- **Terraform Delay**: During one of the runs, I noticed a significant delay in Terraform execution. By enabling debug mode (`terraform apply -debug`), I discovered that the process was stuck due to a permission problem. Specifically, Terraform was trying to move my SSH key to the specified location, but it didn't have the proper permissions. After identifying the issue, I adjusted the permissions, and the problem was resolved.
+
+- **Ansible Failures**: When running Ansible, I faced multiple failures. By increasing the verbosity (`ansible-playbook -vvv`), I was able to trace the issue to Ansible not properly recognizing my SSH key. Once I addressed the SSH configuration, the playbook ran smoothly.
 
 ---
 
-Let me know if you'd like to add any additional sections or need further explanations on any part!
+### Jenkins Integration
+
+Jenkins automates the entire CI/CD pipeline, ensuring seamless provisioning and deployment:
+
+1. **Checkout Code**: The pipeline pulls the latest code from the Git repository.
+2. **Terraform Init/Plan/Apply**: These stages handle Terraform initialization, planning, and resource provisioning.
+3. **Terraform Destroy**: This cleans up resources after testing or when no longer needed.
+
+Jenkins ensures that the process is fully automated, reducing human error and improving workflow efficiency.
+
+---
+
+### Source of Information
+
+To build this solution, I relied on the following resources:
+
+- **Google**: Terraform documentation and other online resources.
+- **Terraform Documentation**: [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+- **YouTube**: Videos on Terraform best practices.
+- **Manuals**: Official documentation for Terraform and Ansible.
+  - [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+  - [Ansible AWS Collection](https://docs.ansible.com/ansible/latest/collections/amazon/aws/index.html)
+
+These resources were instrumental in shaping the infrastructure design and ensuring that the environment was properly configured for seamless deployment and management.
+
+---
+
+### Suggested Improvements
+
+- **Auto Scaling**: To enhance availability and fault tolerance, adding **auto-scaling** capabilities to automatically adjust the number of EC2 instances based on traffic load could make the system more resilient and cost-efficient. With auto-scaling, new EC2 instances can be spun up when traffic increases, and unnecessary instances can be terminated when demand decreases.
