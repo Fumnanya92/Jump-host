@@ -1,10 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Hello</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Status - Nginx Servers</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #2b5876, #4e4376);
+            color: white;
+            text-align: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        .server-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 20px;
+            width: 80%;
+            max-width: 1200px;
+        }
+        .server-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease;
+        }
+        .server-card:hover {
+            transform: scale(1.05);
+        }
+        .server-card h2 {
+            font-size: 2rem;
+            margin: 10px 0;
+        }
+        .server-card p {
+            font-size: 1.1rem;
+            color: #c0c0c0;
+        }
+        .status {
+            font-size: 1.5rem;
+            margin-top: 15px;
+            color: #00ff00;
+        }
+        .status.offline {
+            color: #ff4747;
+        }
+        footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 1rem;
+            color: #c0c0c0;
+        }
+    </style>
 </head>
-<body style="font-family: sans-serif; text-align: center; padding-top: 50px;">
-    <h1>Hello, {{ inventory_hostname }}</h1>
-    <p>This is an Nginx server running in a Docker container.</p>
+<body>
+    <h1>Welcome to Nginx Server Dashboard</h1>
+    <p>Get the status of your Nginx Docker servers:</p>
+    
+    <div class="server-list">
+        {% for idx in range(1, 4) %}
+            <div class="server-card">
+                <h2>Server {{ idx }}</h2>
+                <p>IP Address: {{ private_ips[idx - 1] }}</p>
+                <p>Hostname: server{{ idx }}</p>
+                <p class="status {% if idx == 1 %}offline{% else %}online{% endif %}">
+                    {% if idx == 1 %}Offline{% else %}Online{% endif %}
+                </p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Nginx Dashboard | Powered by Terraform, Ansible, and Docker</p>
+    </footer>
 </body>
 </html>
