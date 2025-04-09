@@ -26,7 +26,7 @@ output "private_server_instance_ip" {
 locals {
   inventory_content = templatefile("${path.module}/ansible/inventory.tpl", {
     bastion_ip  = aws_instance.bastion.public_ip
-    private_ips = join("\n", [for i in aws_instance.private_servers : i.private_ip])
+    private_ips = [for i in aws_instance.private_servers : i.private_ip]
   })
 }
 
