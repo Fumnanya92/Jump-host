@@ -43,5 +43,7 @@ output "nginx_servers" {
   value       = module.ec2.private_server_instance_ip
 }
 
-
-
+output "alb_dns_name" {
+  description = "Public DNS name of the ALB"
+  value       = module.alb.alb_dns_name 
+}

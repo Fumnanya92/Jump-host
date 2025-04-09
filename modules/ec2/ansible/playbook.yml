@@ -14,6 +14,13 @@
       include_role:
         name: docker
 
+    - name: Set private IPs for all Nginx servers
+      run_once: true
+      set_fact:
+        private_ips: "{{ groups['nginx_servers'] | map('extract', hostvars, ['ansible_host']) | list }}"
+
     - name: Include Nginx role
       include_role:
         name: nginx
+
+

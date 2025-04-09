@@ -1,7 +1,7 @@
 key_pair_name        = "my_terraform_key"
 private_key_path     = "./my_terraform_key.pem"
 nat_gateway_ip       = "true"
-s3_bucket_name       = "new3bus"
+s3_bucket_name       = "new3bus1254"
 vpc_cidr             = "10.161.0.0/24"
 public_subnet_1_cidr = "10.161.0.0/28"
 public_subnet_2_cidr = "10.161.0.16/28"

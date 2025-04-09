@@ -1,8 +1,4 @@
-Your updated project description sounds solid! Here's a refined version with the new details and personal experiences integrated:
-
----
-
-### Jump-host Project
+## The Jump-host Project
 
 This project uses **Terraform** to provision AWS infrastructure and **Ansible** to configure services on EC2 instances. The infrastructure includes a **Virtual Private Cloud (VPC)**, private and public subnets across 2 Availability Zones (AZs), EC2 instances, a **Bastion Host (jump host)**, an **Application Load Balancer (ALB)**, and Dockerized **Nginx** services running on each EC2 instance. Additionally, Docker logs are delivered to AWS **CloudWatch** for centralized logging and monitoring.
 
@@ -21,6 +17,7 @@ This project uses **Terraform** to provision AWS infrastructure and **Ansible** 
    - Jenkins Integration
 7. **Source of Information**
 8. **Suggested Improvements**
+9. **Debugging Terraform Issues**
 
 ---
 
@@ -188,3 +185,13 @@ These resources were instrumental in shaping the infrastructure design and ensur
 ### Suggested Improvements
 
 - **Auto Scaling**: To enhance availability and fault tolerance, adding **auto-scaling** capabilities to automatically adjust the number of EC2 instances based on traffic load could make the system more resilient and cost-efficient. With auto-scaling, new EC2 instances can be spun up when traffic increases, and unnecessary instances can be terminated when demand decreases.
+
+---
+
+### Debugging Terraform Issues
+
+If you encounter issues while running Terraform commands, you can enable debug logging to get more detailed output. Use the following command to set the Terraform logging level to `DEBUG`:
+
+```bash
+export TF_LOG=DEBUG
+```

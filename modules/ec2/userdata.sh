@@ -6,57 +6,57 @@ export DEBIAN_FRONTEND=noninteractive
 echo "Updating and installing essentials..."
 sudo apt-get update -y
 sudo apt-get upgrade -y
-sudo apt-get install -y python3 python3-pip git unzip curl software-properties-common wget apt-transport-https gpg
+# sudo apt-get install -y python3 python3-pip git unzip curl software-properties-common wget apt-transport-https gpg
 
-# Install Java (required for Jenkins)
-sudo apt-get install -y fontconfig openjdk-17-jre
+# # Install Java (required for Jenkins)
+# sudo apt-get install -y fontconfig openjdk-17-jre
 
-# Add Jenkins repository and install Jenkins
-sudo rm -f /etc/apt/sources.list.d/jenkins.list
-sudo mkdir -p /usr/share/keyrings
-sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+# # Add Jenkins repository and install Jenkins
+# sudo rm -f /etc/apt/sources.list.d/jenkins.list
+# sudo mkdir -p /usr/share/keyrings
+# sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
 
-echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" \
-  | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+# echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" \
+#   | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
 
-sudo apt-get update -y
-sudo apt-get install -y jenkins
+# sudo apt-get update -y
+# sudo apt-get install -y jenkins
 
-# Skip setup wizard and configure admin user
-sudo mkdir -p /var/lib/jenkins/init.groovy.d
+# # Skip setup wizard and configure admin user
+# sudo mkdir -p /var/lib/jenkins/init.groovy.d
 
-cat << 'EOF' | sudo tee /var/lib/jenkins/init.groovy.d/basic-security.groovy > /dev/null
-#!groovy
-import jenkins.model.*
-import hudson.security.*
+# cat << 'EOF' | sudo tee /var/lib/jenkins/init.groovy.d/basic-security.groovy > /dev/null
+# #!groovy
+# import jenkins.model.*
+# import hudson.security.*
 
-def instance = Jenkins.getInstance()
+# def instance = Jenkins.getInstance()
 
-def hudsonRealm = new HudsonPrivateSecurityRealm(false)
-hudsonRealm.createAccount("admin", "admin123")
-instance.setSecurityRealm(hudsonRealm)
+# def hudsonRealm = new HudsonPrivateSecurityRealm(false)
+# hudsonRealm.createAccount("admin", "admin123")
+# instance.setSecurityRealm(hudsonRealm)
 
-def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
-strategy.setAllowAnonymousRead(false)
-instance.setAuthorizationStrategy(strategy)
+# def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
+# strategy.setAllowAnonymousRead(false)
+# instance.setAuthorizationStrategy(strategy)
 
-instance.save()
-EOF
+# instance.save()
+# EOF
 
-# Set Jenkins to consider initial setup complete
-sudo bash -c 'echo 2.0 > /var/lib/jenkins/jenkins.install.UpgradeWizard.state'
-sudo bash -c 'echo 2.0 > /var/lib/jenkins/jenkins.install.InstallUtil.lastExecVersion'
+# # Set Jenkins to consider initial setup complete
+# sudo bash -c 'echo 2.0 > /var/lib/jenkins/jenkins.install.UpgradeWizard.state'
+# sudo bash -c 'echo 2.0 > /var/lib/jenkins/jenkins.install.InstallUtil.lastExecVersion'
 
-# Fix permissions
-sudo chown -R jenkins:jenkins /var/lib/jenkins
+# # Fix permissions
+# sudo chown -R jenkins:jenkins /var/lib/jenkins
 
-# Start and enable Jenkins
-sudo systemctl daemon-reload
-sudo systemctl enable jenkins
-sudo systemctl start jenkins
+# # Start and enable Jenkins
+# sudo systemctl daemon-reload
+# sudo systemctl enable jenkins
+# sudo systemctl start jenkins
 
-# Open the Jenkins port (8080)
-sudo ufw allow 8080 > /dev/null 2>&1 || true
+# # Open the Jenkins port (8080)
+# sudo ufw allow 8080 > /dev/null 2>&1 || true
 
 # Setup directory for Ansible
 sudo -u ubuntu mkdir -p /home/ubuntu/ansible
@@ -78,6 +78,6 @@ echo "    UserKnownHostsFile /dev/null" | sudo tee -a /home/ubuntu/.ssh/config >
 sudo chmod 600 /home/ubuntu/.ssh/config
 sudo chown ubuntu:ubuntu /home/ubuntu/.ssh/config
 
-# Display Ansible version
-echo "Ansible version:"
-ansible --version || echo "Ansible not installed."
+# # Display Ansible version
+# echo "Ansible version:"
+# ansible --version || echo "Ansible not installed."
