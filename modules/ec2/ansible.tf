@@ -46,6 +46,7 @@ resource "null_resource" "run_ansible" {
       "chown ubuntu:ubuntu ~/.ssh/config",
       "mv -f /tmp/my_terraform_key.pem ~/.ssh/my_terraform_key.pem",
       "chmod 400 ~/.ssh/my_terraform_key.pem",
+      "sleep 30",
       "echo 'Installing Ansible if not already present...'",
       "sudo DEBIAN_FRONTEND=noninteractive apt update -y",
       "sudo DEBIAN_FRONTEND=noninteractive apt-add-repository --yes --update ppa:ansible/ansible",
